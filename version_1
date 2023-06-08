@@ -1,0 +1,163 @@
+'use strict';
+
+const mockData = require('./mockData.js').data;
+
+let allUserInformation = {};
+
+Loop1:
+while(true){
+
+  while (true) {
+    const first_name = prompt("What is your first name?");
+    if (first_name.length < 2) {
+    console.log("Your input was too short, what is your first name?");
+      continue;
+    } else {
+      allUserInformation.first_name = (first_name);
+      break;
+    }
+  }
+
+  while (true) {
+    const last_name = prompt("What is your last name?");
+   if (last_name.length < 2) {
+    console.log("Your input was too short, what is your last name?");
+     continue;
+    } else {
+      allUserInformation.last_name = (last_name);
+      break;
+    }
+  }
+
+
+  while (true) {
+    const age = prompt("What is your age?");
+    if ((isNaN(age)) || (age === "")) {
+      console.log("Please enter a number for your age");
+      continue;
+    } else if (age < 18) {
+      console.log("Sorry you are too young")
+      break Loop1;
+    } else {
+      allUserInformation.age = Number(age);
+      break;
+    }
+  }
+
+  while (true) {
+    const gender = prompt("What is your gender? (F/M/X)").toUpperCase();
+    if ((gender === "F") || (gender === "M") || (gender === "X")) {
+      allUserInformation.gender = (gender);
+      break;
+    } else {
+      console.log("Your input is unclear, please use F (female), M (male) or X (nonbinary)")
+      continue;
+    }
+  }
+  
+  while (true) {
+    const gender_interest = prompt("What is the gender you are interested in? (F/M/X)").toUpperCase();
+    if ((gender_interest === "F") || (gender_interest === "M") || (gender_interest === "X")) {
+      allUserInformation.gender_interest = (gender_interest);
+      break;
+    } else {
+      console.log("Your input is unclear, please use F (female), M (male) or X (nonbinary)")
+      continue;
+    }
+  }
+  
+  while (true) {
+    const location = prompt("In what type of location do you live? (city/rural)").toLowerCase();
+    if ((location === "city") || (location === "rural")) {
+      allUserInformation.location = (location);
+      break;
+    } else {
+      console.log("Your input is unclear, please choose 'city' or 'rural'")
+      continue;
+    }
+  }
+  
+  let min_age_interest;
+  while (true) {
+    min_age_interest = prompt("What is the minimum age you're interested in?");
+    if ((isNaN(min_age_interest)) || (min_age_interest === "")) {
+      console.log("Please enter a number for the minimum age you're interested in");
+      continue;
+    } else if (min_age_interest < 18) {
+      console.log("Sorry all members must be 18+ join. Please enter a minimum prefered age of 18 or higher")
+      continue;
+    } else {
+      allUserInformation.min_age_interest = Number(min_age_interest);
+      break;
+    }
+  }
+  
+  while (true) {
+    const max_age_interest = prompt("What is the maximum age you're interested in?");
+    if ((isNaN(max_age_interest)) || (max_age_interest === "")) {
+      console.log("Please enter a number for the maximum age you're interested in");
+      continue;
+    } else if (max_age_interest <= min_age_interest) {
+      console.log(`Please choose a maximum age higer than your prefered minimum age of ${min_age_interest}`);
+      continue;
+    } else {
+      allUserInformation.max_age_interest = Number(max_age_interest);
+      break;
+    }
+  }
+}
+//to show collected data
+// console.table(allUserInformation)
+
+const matches = [];
+
+const userAge = allUserInformation.age;
+const userMinAgeInterest = allUserInformation.min_age_interest;
+const userMaxAgeInterest = allUserInformation.max_age_interest;
+const userGender = allUserInformation.gender;
+const userGenderInterest = allUserInformation.gender_interest;
+const userLocation = allUserInformation.location;
+
+for (const person of mockData) {
+  const personAge = person.age;
+  const personMinAgeInterest = person.min_age_interest;
+  const personMaxAgeInterest = person.max_age_interest;
+  const personGender = person.gender;
+  const personGenderInterest = person.gender_interest;
+  const personLocation = person.location;
+
+
+  if ((personAge >= userMinAgeInterest) && (personAge <= userMaxAgeInterest)) {
+    if ((userAge >= personMinAgeInterest) && (personAge <= personMaxAgeInterest)) {
+      if (personGenderInterest === userGender) {
+        if (userGenderInterest === personGender) {
+          if (userLocation === personLocation) {
+
+            matches.push(person)
+
+         }
+       }
+     }
+    }
+  } else {
+    continue;
+  }
+}
+
+// Count the number of matches/Show the number of matches.
+if (matches.length === 0) {
+  console.log(`Unfortunatly you have ${matches.length} matches at this time.`);
+} else if (matches.length === 1) {
+  console.log(`You have ${matches.length} match. It is:`);
+} else if (matches.length >1) { 
+  console.log(`You have ${matches.length} matches. They are:`);
+}
+
+for (const match of matches) {
+const matchFirstName = match.first_name;
+const matchLastName = match.last_name;
+const matchAge = match.age;
+const matchLocation = match.location;
+
+console.log(`${matchFirstName} ${matchLastName}, with the age of ${matchAge}, living in a ${matchLocation}`);
+}
